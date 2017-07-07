@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Socket Survey Form</title>
+		<link rel="stylesheet" href="/stylesheets/style.css" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript">
+			$(document).ready( () => {
+				var socket = io.connect();
+				$("button[name='temp_button']").click( () => {
+					socket.emit("button_clicked", {reason: "I want to learn about sockets!"})
+				});
+				socket.on("server_response", (data) => {
+					console.log("The server says:", data.response);
+				});
+				$("button[name='form_submit']").click( () => {
+					data = {
+						name: $("input[name='name']").val(),
+						location: $("select[name='location']").val(),
+						language: $("select[name='language']").val(),
+						comments: $("input[name='comments']").val(),
+					}
+					socket.emit("posting_form", data)
+				})
+				socket.on("return_results", (data) => {
+					console.log(data);
+					$("#results").html("<h3>" + data.response + "</h3>")
+				});
+			})
+		</script>
+	</head>
+	<body>
+		<div id="wrapper">
+			Take a Survey!
+			<div id="results">
+
+			</div>
+			<div id="temp_button">
+				<button name="temp_button">Click me!</button>
+			</div>
+			<div id="survey">
+				<fieldset>
+					<legend>Survey</legend>
+					<form id="survey_form">
+						<label for="name">Your Name:</label>
+						<input type="text" name="name" />
+						<label for="location">Dojo Location:</label>
+						<select name="location">
+							<option value="Chicago">Chicago</option>
+							<option value="Dallas">Dallas</option>
+							<option value="Los Angeles">Los Angeles</option>
+							<option value="Seattle">Seattle</option>
+							<option value="Silicon Valley">Silicon Valley</option>
+							<option value="Tulsa">Tulsa</option>
+							<option value="Washington DC">Washington DC</option>
+						</select>
+						<label for="language">Favorite Language: </label>
+						<select name="language">
+							<option value=".NET">.NET</option>
+							<option value="iOS Swift">iOS Swift</option>
+							<option value="Java">Java</option>
+							<option value="MEAN">MEAN</option>
+							<option value="Ruby On Rails">Ruby On Rails</option>
+						</select>
+						<label for="comments">Comments: </label>
+						<input type="textarea" name="comments" />
+						<button type="button" name="form_submit">Submit!</button>
+					</form>
+				</fieldset>
+
+			</div>
+		</div>
+	</body>
+</html>
