@@ -22,6 +22,10 @@
 						language: $("select[name='language']").val(),
 						comments: $("input[name='comments']").val(),
 					}
+					$("input[name='name']").val(""),
+					$("select[name='location']").val(""),
+					$("select[name='language']").val(""),
+					$("input[name='comments']").val(""),
 					socket.emit("posting_form", data)
 				})
 				socket.on("return_results", (data) => {
